@@ -1,0 +1,868 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fórum Desafio NASA - Habitat Layout</title>
+    <style>
+        :root {
+            --primary-color: #405859;
+            --primary-dark: #329b92;
+            --header-bg: #000000;
+            --body-bg: #28383c;
+            --card-bg: #ffffff;
+            --text-color: #343a40;
+            --secondary-text-color: #6c757d;
+            --border-color: #e9ecef;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: var(--body-bg);
+            color: var(--text-color);
+        }
+
+        header {
+            background-color: var(--header-bg);
+            color: white;
+            padding: 20px 0;
+            text-align: center;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        header h1 {
+            font-size: 1.8em;
+            margin: 0 0 10px 0;
+            font-weight: 700;
+        }
+
+        nav a {
+            color: white;
+            margin: 0 15px;
+            text-decoration: none;
+            font-weight: 600;
+            padding: 5px 10px;
+            border-radius: 5px;
+            transition: background-color 0.2s, color 0.2s, transform 0.2s;
+            cursor: pointer;
+        }
+
+        nav a:hover {
+            background-color: var(--primary-color);
+            color: white;
+            transform: scale(1.05);
+        }
+
+        .cta-button {
+            background-color: var(--primary-color);
+            border-radius: 50px;
+            padding: 8px 15px !important;
+            border: none;
+        }
+
+        .cta-button:active {
+            background-color: var(--primary-dark) !important;
+            transform: scale(0.98);
+            box-shadow: 0 0 5px rgba(0, 0, 0, 0.2) inset;
+        }
+
+        .container {
+            max-width: 960px;
+            width: 90%;
+            margin: 30px auto;
+            background-color: var(--card-bg);
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+            transition: max-width 0.4s ease-in-out;
+        }
+
+        .container.narrow {
+            max-width: 500px;
+        }
+
+        h2 {
+            font-size: 1.5em;
+            font-weight: 700;
+            border-bottom: 2px solid var(--border-color);
+            padding-bottom: 15px;
+            margin-top: 0;
+            margin-bottom: 20px;
+            color: var(--text-color);
+        }
+
+        #topico-list {
+            min-height: 200px;
+        }
+
+        .topico {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 20px;
+            margin-bottom: 15px;
+            border-radius: 8px;
+            background-color: var(--card-bg);
+            border: 1px solid var(--border-color);
+            text-decoration: none;
+            color: inherit;
+            transition: box-shadow 0.3s, border-color 0.3s, transform 0.3s;
+            cursor: pointer;
+        }
+
+        .topico:hover, .topico:focus {
+            border-color: var(--primary-color);
+            box-shadow: 0 6px 16px rgba(0, 0, 0, 0.1);
+            transform: translateY(-2px);
+            outline: none;
+        }
+
+        .topico-content {
+            flex-grow: 1;
+        }
+
+        .topico h3 {
+            margin: 0 0 5px 0;
+            font-size: 1.2em;
+        }
+
+        .topico p {
+            font-size: 0.85em;
+            color: var(--secondary-text-color);
+            margin: 0;
+        }
+
+        .info-status {
+            text-align: right;
+            font-size: 0.9em;
+            color: var(--secondary-text-color);
+            min-width: 150px;
+        }
+
+        .info-status .respostas {
+            display: block;
+            font-weight: 600;
+            color: var(--primary-color);
+            margin-bottom: 3px;
+        }
+
+        #topic-detail-content {
+            padding: 20px;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+        }
+       
+        #topic-detail-content h1 {
+            font-size: 1.8em;
+            margin-top: 0;
+            margin-bottom: 10px;
+            color: var(--primary-color);
+        }
+       
+        #topic-detail-content .topic-meta {
+            font-size: 0.9em;
+            color: var(--secondary-text-color);
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid var(--border-color);
+        }
+       
+        #topic-detail-image-container {
+            margin: 20px 0;
+            text-align: center;
+        }
+       
+        #topic-detail-image {
+            max-width: 100%;
+            height: auto;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        #topic-detail-content .topic-body {
+            line-height: 1.6;
+            white-space: pre-wrap;
+        }
+       
+        .back-button {
+            display: inline-block;
+            margin-bottom: 20px;
+            color: var(--primary-color);
+            text-decoration: none;
+            font-weight: 600;
+            transition: opacity 0.2s;
+        }
+       
+        .back-button:hover {
+            opacity: 0.8;
+            text-decoration: underline;
+        }
+   
+
+
+        #create-topic-form,
+        #login-form,
+        #register-form,
+        #rules-content,
+        #my-account-content,
+        #topic-detail {
+            display: none;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: var(--text-color);
+        }
+
+        .form-group input[type="text"],
+        .form-group input[type="email"],
+        .form-group input[type="password"],
+        .form-group input[type="file"],
+        .form-group textarea {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            box-sizing: border-box;
+            font-family: 'Inter', sans-serif;
+            font-size: 1em;
+            transition: border-color 0.2s;
+        }
+       
+        .form-group input[type="file"] {
+             padding: 8px 12px;
+        }
+
+
+        .form-group input:focus,
+        .form-group textarea:focus {
+            border-color: var(--primary-color);
+            outline: none;
+        }
+
+        .submit-button {
+            background-color: var(--primary-color);
+            color: white;
+            padding: 12px 25px;
+            border: none;
+            border-radius: 50px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: background-color 0.2s, transform 0.2s;
+        }
+
+        .submit-button:hover {
+            background-color: var(--primary-dark);
+            transform: translateY(-1px);
+        }
+       
+        .form-link {
+            display: block;
+            text-align: center;
+            margin-top: 15px;
+            font-size: 0.9em;
+            color: var(--secondary-text-color);
+            text-decoration: none;
+        }
+
+        .form-link:hover {
+            color: var(--primary-color);
+            text-decoration: underline;
+        }
+       
+        .logged-in-message {
+            text-align: center;
+            padding: 20px;
+            border: 2px solid var(--primary-color);
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+       
+        .logged-in-message.error {
+            border-color: #ff6b6b;
+            color: #d63333;
+        }
+
+     
+        @media (max-width: 768px) {
+            .container.narrow {
+                max-width: 90%;
+            }
+            .topico {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            .info-status {
+                margin-top: 10px;
+                text-align: left;
+                min-width: auto;
+            }
+            .info-status .respostas {
+                display: inline;
+                margin-right: 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>Sua casa no espaço: o criador de layout de habitat </h1>
+        <nav>
+            <a href="#/inicio" id="link-inicio">Início</a>
+            <a href="#/login" id="link-minha-conta">Entrar / Registrar</a>
+            <a href="#/regras">Regras</a>
+            <a href="#/novo-topico" id="link-novo-topico" class="cta-button">Novo Tópico 🚀</a>
+            <a href="#/logout" id="link-logout" style="display:none; color: #ff6b6b;">Sair 🚪</a>
+        </nav>
+    </header>
+
+    <div class="container" id="main-container">
+
+        <div id="topico-list">
+            <h2>Tópicos Recentes</h2>
+            </div>
+
+        <div id="topic-detail">
+            <a href="#/inicio" class="back-button">← Voltar para a lista de tópicos</a>
+            <div id="topic-detail-content">
+                </div>
+        </div>
+       
+        <div id="create-topic-form">
+            <h2>Criar Novo Tópico para o Desafio 🛰️</h2>
+            <div id="create-topic-info"></div>
+           
+            <form id="form-novo-topico">
+                <div class="form-group">
+                    <label for="titulo-topico">Título Curto e Descritivo:</label>
+                    <input type="text" id="titulo-topico" name="titulo" required placeholder="Ex: Proposta de Sistema de Filtragem de Água">
+                </div>
+
+                <div class="form-group">
+                    <label for="imagem-topico-url">URL da Imagem (simulação de anexo):</label>
+                    <input type="text" id="imagem-topico-url" name="imagem-topico-url" placeholder="Cole aqui o link de uma imagem (Ex: https://i.imgur.com/example.jpg)">
+                    <p style="font-size: 0.8em; color: var(--secondary-text-color);">*Como não é possível fazer upload, use um link de imagem (URL) para anexar ao seu tópico.</p>
+                </div>
+
+                <div class="form-group">
+                    <label for="conteudo">Conteúdo / Detalhes da sua Ideia:</label>
+                    <textarea id="conteudo" name="conteudo" rows="10" required placeholder="Descreva sua solução, os materiais necessários e os benefícios para o habitat."></textarea>
+                </div>
+
+                <button type="submit" class="submit-button">
+                    Publicar Tópico no Fórum
+                </button>
+            </form>
+        </div>
+       
+        <div id="login-form">
+            <h2>Login</h2>
+            <form id="form-login">
+                <div class="form-group">
+                    <label for="login-email">Email ou Nome de Usuário:</label>
+                    <input type="text" id="login-input" name="login-input" required placeholder="Seu email ou apelido">
+                </div>
+
+                <div class="form-group">
+                    <label for="login-password">Senha:</label>
+                    <input type="password" id="login-password" name="login-password" required placeholder="Sua senha secreta">
+                </div>
+               
+                <button type="submit" class="submit-button">
+                    Entrar na Conta
+                </button>
+               
+                <a href="#/cadastro" class="form-link">Ainda não tem conta? **Registre-se aqui**</a>
+            </form>
+        </div>
+
+
+        <div id="register-form">
+            <h2>Crie sua Conta de Explorador 🧑‍🚀</h2>
+
+            <form id="form-registro">
+                <div class="form-group">
+                    <label for="username">Nome de Usuário:</label>
+                    <input type="text" id="username" name="username" required placeholder="Seu apelido espacial (Ex: SpaceGeek)">
+                </div>
+               
+                <div class="form-group">
+                    <label for="email">Email:</label>
+                    <input type="email" id="email" name="email" required placeholder="seu.email@exemplo.com">
+                </div>
+
+                <div class="form-group">
+                    <label for="password">Senha:</label>
+                    <input type="password" id="password" name="password" required placeholder="Mínimo de 6 caracteres">
+                </div>
+               
+                <div class="form-group">
+                    <label for="confirm-password">Confirmar Senha:</label>
+                    <input type="password" id="confirm-password" name="confirm-password" required placeholder="Repita sua senha">
+                </div>
+
+                <button type="submit" class="submit-button">
+                    Registrar Nova Conta
+                </button>
+               
+                <a href="#/login" class="form-link">Já tem conta? **Fazer Login**</a>
+            </form>
+        </div>
+       
+        <div id="rules-content">
+            <h2>Regras do Fórum de Habitat Espacial 📜</h2>
+            <p>Este fórum é dedicado à colaboração em ideias inovadoras para o desafio de habitat espacial da NASA. Por favor, mantenha o foco e o respeito:</p>
+            <ul>
+                <li>Mantenha a discussão **direcionada ao desafio** e à ciência/engenharia.</li>
+                <li>**Respeite** todos os participantes e suas ideias.</li>
+                <li>Não compartilhe informações pessoais ou confidenciais.</li>
+                <li>Qualquer forma de spam ou conteúdo ofensivo resultará em banimento imediato.</li>
+            </ul>
+        </div>
+       
+        <div id="my-account-content">
+            <h2>Bem-vindo(a), <span id="account-username">Explorador</span>! 🧑‍🚀</h2>
+            <div class="logged-in-message">
+                <p>Obrigado por contribuir para o Desafio. Você está logado e pronto para postar novos tópicos e interagir com a comunidade.</p>
+                <p>Seu Status: **Engenheiro de Voo**. Você tem **<span id="user-topic-count">0</span>** tópicos criados.</p>
+                <button onclick="navigateTo('/logout')" class="submit-button" style="background-color: #ff6b6b; margin-top: 15px;">Sair da Conta</button>
+                <button onclick="resetTopics()" class="submit-button" style="background-color: #405859; margin-top: 15px;">Resetar Tópicos</button>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+     
+        const DEFAULT_TOPICS = [
+            { id: 1, title: "Desafio: Projeto de Estufa para Marte", content: "Esta é a minha proposta detalhada para um sistema de estufa hidropônica que utiliza 95% de água reciclada e luz LED especializada para imitar o espectro solar na superfície de Marte. A estrutura é inflável.", author: "Astronauta Júnior", last_response: "2h atrás", replies: 12, views: 450, image_url: "https://via.placeholder.com/600x300?text=Projeto+Estufa+Marte" },
+            { id: 2, title: "Melhores Materiais para Escudos de Radiação Lunar", content: "Sugiro o uso de rególito lunar compactado misturado com polietileno de alta densidade. Este composto oferece um equilíbrio ideal entre proteção contra raios cósmicos e facilidade de construção robótica in-situ. Qual a opinião de vocês?", author: "Engenheira Espacial", last_response: "Ontem", replies: 3, views: 98, image_url: "https://via.placeholder.com/600x400?text=Material+Escudo+Radiação" }
+        ];
+
+        function getTopics() {
+            let topics = JSON.parse(localStorage.getItem('forumTopics'));
+            if (!topics || topics.length === 0) {
+               
+                localStorage.setItem('forumTopics', JSON.stringify(DEFAULT_TOPICS));
+                return DEFAULT_TOPICS;
+            }
+            return topics;
+        }
+
+        function saveTopics(topics) {
+            localStorage.setItem('forumTopics', JSON.stringify(topics));
+        }
+       
+        function getUsers() {
+            return JSON.parse(localStorage.getItem('forumUsers')) || [];
+        }
+
+        function saveUsers(users) {
+            localStorage.setItem('forumUsers', JSON.stringify(users));
+        }
+
+        function getLoggedInUser() {
+           
+            return JSON.parse(sessionStorage.getItem('loggedInUser'));
+        }
+       
+        function setLoggedInUser(user) {
+            sessionStorage.setItem('loggedInUser', JSON.stringify(user));
+        }
+       
+        function clearLoggedInUser() {
+            sessionStorage.removeItem('loggedInUser');
+        }
+
+       
+
+        const mainContainer = document.getElementById('main-container');
+        const topicListDiv = document.getElementById('topico-list');
+        const createFormDiv = document.getElementById('create-topic-form');
+        const loginFormDiv = document.getElementById('login-form');
+        const registerFormDiv = document.getElementById('register-form');
+        const rulesContentDiv = document.getElementById('rules-content');
+        const myAccountDiv = document.getElementById('my-account-content');
+        const topicDetailDiv = document.getElementById('topic-detail');
+       
+        const formNovoTopico = document.getElementById('form-novo-topico');
+        const formRegistro = document.getElementById('form-registro');
+        const formLogin = document.getElementById('form-login');
+        const linkMinhaConta = document.getElementById('link-minha-conta');
+        const linkLogout = document.getElementById('link-logout');
+        const linkNovoTopico = document.getElementById('link-novo-topico');
+
+     
+        function hideAllSections(isNarrow = false) {
+            topicListDiv.style.display = 'none';
+            createFormDiv.style.display = 'none';
+            loginFormDiv.style.display = 'none';
+            registerFormDiv.style.display = 'none';
+            rulesContentDiv.style.display = 'none';
+            myAccountDiv.style.display = 'none';
+            topicDetailDiv.style.display = 'none';
+
+            if (isNarrow) {
+                mainContainer.classList.add('narrow');
+            } else {
+                mainContainer.classList.remove('narrow');
+            }
+        }
+
+        function updateNav() {
+            const user = getLoggedInUser();
+            const isLoggedIn = !!user;
+
+            linkLogout.style.display = isLoggedIn ? 'inline' : 'none';
+           
+            linkMinhaConta.style.display = 'inline';
+            linkMinhaConta.textContent = isLoggedIn ? 'Minha Conta 👤' : 'Entrar / Registrar';
+            linkMinhaConta.setAttribute('href', isLoggedIn ? '#/minha-conta' : '#/login');
+           
+         
+            linkNovoTopico.style.pointerEvents = isLoggedIn ? 'auto' : 'none';
+            linkNovoTopico.style.opacity = isLoggedIn ? '1' : '0.5';
+            linkNovoTopico.title = isLoggedIn ? '' : 'Faça login para criar um novo tópico.';
+           
+           
+            const createTopicInfo = document.getElementById('create-topic-info');
+            createTopicInfo.innerHTML = '';
+            if (!isLoggedIn) {
+                createTopicInfo.innerHTML = '<p class="logged-in-message error">Você precisa estar **logado** para postar. <a href="#/login">Clique aqui para entrar.</a></p>';
+                formNovoTopico.style.display = 'none';
+            } else {
+                formNovoTopico.style.display = 'block';
+            }
+        }
+
+       
+        function showTopicList() {
+            hideAllSections(false);
+            topicListDiv.style.display = 'block';
+            renderTopics();
+        }
+
+        function showCreateForm() {
+            hideAllSections(false);
+            if (!getLoggedInUser()) {
+                 
+                 navigateTo('/login');
+                 return;
+            }
+            createFormDiv.style.display = 'block';
+           
+            formNovoTopico.reset();
+        }
+       
+        function showRulesContent() {
+            hideAllSections(false);
+            rulesContentDiv.style.display = 'block';
+        }
+
+        function showLoginForm() {
+            hideAllSections(true);
+           
+            if (getLoggedInUser()) {
+                navigateTo('/minha-conta');
+                return;
+            }
+            loginFormDiv.style.display = 'block';
+            formLogin.reset();
+        }
+
+        function showRegisterForm() {
+            hideAllSections(true);
+           
+            if (getLoggedInUser()) {
+                navigateTo('/minha-conta');
+                return;
+            }
+            registerFormDiv.style.display = 'block';
+            formRegistro.reset();
+        }
+       
+        function showMyAccount() {
+            const user = getLoggedInUser();
+            if (!user) {
+                navigateTo('/login');
+                return;
+            }
+           
+            hideAllSections(true);
+            myAccountDiv.style.display = 'block';
+            document.getElementById('account-username').textContent = user.username;
+           
+            const userTopics = getTopics().filter(t => t.author === user.username);
+            document.getElementById('user-topic-count').textContent = userTopics.length;
+        }
+       
+     
+        function showTopicDetail(topicId) {
+            hideAllSections(false);
+            const topics = getTopics();
+            const topic = topics.find(t => t.id === parseInt(topicId));
+           
+            if (!topic) {
+                alert('Tópico não encontrado.');
+                navigateTo('/inicio');
+                return;
+            }
+           
+            topicDetailDiv.style.display = 'block';
+            const detailContent = document.getElementById('topic-detail-content');
+           
+         
+            const topicIndex = topics.findIndex(t => t.id === parseInt(topicId));
+            if (topicIndex !== -1) {
+             
+                if (typeof topics[topicIndex].views === 'undefined') {
+                    topics[topicIndex].views = (DEFAULT_TOPICS.find(t => t.id === topic.id)?.views || 0) + 1;
+                } else {
+                    topics[topicIndex].views += 1;
+                }
+                saveTopics(topics);
+            }
+           
+            const updatedTopic = topics[topicIndex] || topic;
+
+            let imageHtml = '';
+            if (updatedTopic.image_url) {
+                imageHtml = `
+                    <div id="topic-detail-image-container">
+                        <img id="topic-detail-image" src="${updatedTopic.image_url}" alt="Imagem do Tópico: ${updatedTopic.title}" onerror="this.onerror=null; this.src='https://via.placeholder.com/600x400?text=Imagem+Nao+Encontrada';">
+                    </div>
+                `;
+            }
+           
+            detailContent.innerHTML = `
+                <h1>${updatedTopic.title}</h1>
+                <p class="topic-meta">
+                    Criado por: <strong>${updatedTopic.author}</strong> | Publicado em: ${new Date(updatedTopic.created_at || '2024-01-01').toLocaleDateString('pt-BR')}
+                    <br>
+                    Respostas: ${updatedTopic.replies} | Visualizações: ${updatedTopic.views}
+                </p>
+                ${imageHtml}
+                <div class="topic-body">
+                    ${updatedTopic.content}
+                </div>
+            `;
+        }
+
+
+        function renderTopics() {
+            const topics = getTopics();
+            topicListDiv.innerHTML = '<h2>Tópicos Recentes</h2>';
+           
+            if (topics.length === 0) {
+                 topicListDiv.innerHTML += '<p>Nenhum tópico encontrado. Que tal criar o primeiro?</p>';
+                 return;
+            }
+           
+           
+            [...topics].reverse().forEach(topic => {
+                const topicElement = document.createElement('a');
+               
+                topicElement.href = `#/topico/${topic.id}`;
+                topicElement.classList.add('topico');
+                topicElement.innerHTML = `
+                    <div class="topico-content">
+                        <h3>${topic.title}</h3>
+                        <p>Criado por: ${topic.author} | Última resposta: ${topic.last_response}</p>
+                    </div>
+                    <div class="info-status">
+                        <span class="respostas">${topic.replies} Respostas</span>
+                        <span>Visualizações: ${topic.views || 0}</span>
+                    </div>
+                `;
+                topicListDiv.appendChild(topicElement);
+            });
+        }
+       
+   
+        function navigateTo(path) {
+            const newPath = path.startsWith('/') ? path.substring(1) : path;
+            history.pushState(null, '', `#/${newPath}`);
+            handleRoute();
+        }
+
+     
+        function handleRoute() {
+            const hash = window.location.hash.slice(1);
+            const parts = hash.split('/').filter(p => p);
+            const route = parts[0] || 'inicio';
+
+            updateNav();
+
+            switch (route) {
+                case 'inicio':
+                case '':
+                    showTopicList();
+                    break;
+                case 'novo-topico':
+                    showCreateForm();
+                    break;
+                case 'login':
+                    showLoginForm();
+                    break;
+                case 'cadastro':
+                    showRegisterForm();
+                    break;
+                case 'minha-conta':
+                    showMyAccount();
+                    break;
+                case 'regras':
+                    showRulesContent();
+                    break;
+                case 'logout':
+                    logoutUser();
+                    break;
+                case 'topico':
+                 
+                    const topicId = parts[1];
+                    if (topicId) {
+                        showTopicDetail(topicId);
+                    } else {
+                        navigateTo('/inicio');
+                    }
+                    break;
+                default:
+             
+                    alert('Página não encontrada! Redirecionando para o Início.');
+                    navigateTo('/inicio');
+                    break;
+            }
+        }
+       
+       
+        document.addEventListener('click', function(e) {
+            const target = e.target.closest('a[href^="#/"]');
+            if (target) {
+               
+                e.preventDefault();
+           
+                navigateTo(target.getAttribute('href').slice(1));
+            }
+        });
+       
+     
+        window.addEventListener('popstate', handleRoute);
+
+
+       
+
+     
+        formRegistro.addEventListener('submit', function(e) {
+            e.preventDefault();
+            const username = document.getElementById('username').value.trim();
+            const email = document.getElementById('email').value.trim();
+            const password = document.getElementById('password').value;
+            const confirmPassword = document.getElementById('confirm-password').value;
+           
+            if (password !== confirmPassword) {
+                alert('As senhas não coincidem!');
+                return;
+            }
+           
+            const users = getUsers();
+            if (users.find(u => u.username.toLowerCase() === username.toLowerCase() || u.email.toLowerCase() === email.toLowerCase())) {
+                alert('Nome de usuário ou email já cadastrado!');
+                return;
+            }
+           
+            users.push({ username, email, password, createdAt: new Date().toISOString() });
+            saveUsers(users);
+           
+            alert('Conta criada com sucesso! Faça login para continuar.');
+            navigateTo('/login');
+        });
+       
+       
+        formLogin.addEventListener('submit', function(e) {
+            e.preventDefault();
+            const input = document.getElementById('login-input').value.trim();
+            const password = document.getElementById('login-password').value;
+           
+            const user = getUsers().find(u =>
+                (u.username.toLowerCase() === input.toLowerCase() || u.email.toLowerCase() === input.toLowerCase()) && u.password === password
+            );
+
+            if (user) {
+               
+                const userSession = { username: user.username, email: user.email, createdAt: user.createdAt };
+                setLoggedInUser(userSession);
+                alert(`Bem-vindo de volta, ${user.username}!`);
+                formLogin.reset();
+                navigateTo('/minha-conta');
+            } else {
+                alert('Usuário ou senha inválidos.');
+            }
+        });
+       
+   
+        function resetTopics() {
+            if (confirm('Tem certeza que deseja apagar TODOS os tópicos e restaurar os tópicos padrão? Esta ação é irreversível!')) {
+                localStorage.removeItem('forumTopics');
+                alert('Tópicos resetados com sucesso! Recarregando a lista...');
+                navigateTo('/inicio');
+            }
+        }
+
+        function logoutUser() {
+            clearLoggedInUser();
+            alert('Você foi desconectado(a).');
+            navigateTo('/inicio');
+        }
+       
+       
+        formNovoTopico.addEventListener('submit', function(e) {
+            e.preventDefault();
+            const user = getLoggedInUser();
+            if (!user) return;
+            const title = document.getElementById('titulo-topico').value.trim();
+            const imageUrl = document.getElementById('imagem-topico-url').value.trim();
+            const content = document.getElementById('conteudo').value.trim();
+           
+            if (!title || !content) {
+                alert("Por favor, preencha o Título e o Conteúdo do tópico.");
+                return;
+            }
+
+            const topics = getTopics();
+           
+            const newId = topics.length > 0 ? Math.max(...topics.map(t => t.id)) + 1 : 1;
+
+            const newTopic = {
+                id: newId,
+                title: title,
+                content: content,
+                author: user.username,
+                last_response: "Agora",
+                replies: 0,
+                views: 1,
+                image_url: imageUrl,
+                created_at: new Date().toISOString()
+            };
+           
+            topics.push(newTopic);
+            saveTopics(topics);
+
+            alert('🚀 Tópico publicado com sucesso! Ele já aparece na lista.');
+            formNovoTopico.reset();
+            navigateTo(`/topico/${newId}`);
+        });
+
+
+     
+        document.addEventListener('DOMContentLoaded', handleRoute);
+    </script>
+</body>
+</html>

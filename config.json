@@ -1,0 +1,40 @@
+{
+    "forumUsers": [
+      {
+        "username": "Isac miguel",
+        "email": "admin@nasa.com",
+        "password": "102030",
+        "createdAt": "2024-01-01T10:00:00Z"
+      },
+      {
+        "username": "Explorador1",
+        "email": "explorador1@terra.com",
+        "password": "123",
+        "createdAt": "2024-01-05T14:30:00Z"
+      }
+    ],
+    "forumTopics": [
+      {
+        "id": 1,
+        "title": "Desafio: Projeto de Estufa para Marte",
+        "content": "Esta é a minha proposta detalhada para um sistema de estufa hidropônica que utiliza 95% de água reciclada e luz LED especializada para imitar o espectro solar na superfície de Marte. A estrutura é inflável.",
+        "author": "Astronauta Júnior",
+        "last_response": "2h atrás",
+        "replies": 12,
+        "views": 450,
+        "image_url": "https://via.placeholder.com/600x300?text=Projeto+Estufa+Marte",
+        "created_at": "2024-01-10T11:00:00Z"
+      },
+      {
+        "id": 2,
+        "title": "Melhores Materiais para Escudos de Radiação Lunar",
+        "content": "Sugiro o uso de rególito lunar compactado misturado com polietileno de alta densidade. Este composto oferece um equilíbrio ideal entre proteção contra raios cósmicos e facilidade de construção robótica in-situ. Qual a opinião de vocês?",
+        "author": "Engenheira Espacial",
+        "last_response": "Ontem",
+        "replies": 3,
+        "views": 98,
+        "image_url": "https://via.placeholder.com/600x400?text=Material+Escudo+Radiação",
+        "created_at": "2024-01-15T15:00:00Z"
+      }
+    ]
+  }
