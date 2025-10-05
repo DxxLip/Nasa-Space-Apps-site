@@ -1,868 +1,890 @@
 <!DOCTYPE html>
-<html lang="pt-BR">
+<html lang="pt-br">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Fórum Desafio NASA - Habitat Layout</title>
+    <title>Seu Fórum Moderno - Demonstração Interativa</title>
+    <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        :root {
-            --primary-color: #405859;
-            --primary-dark: #329b92;
-            --header-bg: #000000;
-            --body-bg: #28383c;
-            --card-bg: #ffffff;
-            --text-color: #343a40;
-            --secondary-text-color: #6c757d;
-            --border-color: #e9ecef;
-        }
-
+        /* Configuração da fonte Inter e animações globais */
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap');
+        
         body {
             font-family: 'Inter', sans-serif;
-            margin: 0;
+            background-color: #2170c0; /* Fundo mais claro e suave (slate-100) */
+            padding-top: 6rem; /* Espaço para o header fixo */
+        }
+        
+        /* Classe para o header fixo com sombra mais forte */
+        #fixed-header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 100;
+            background-color: rgb(255, 255, 255);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05); /* Sombra mais profunda */
+        }
+
+        /* Estilo para animação de transição de conteúdo: Inicia invisível e desativado */
+        .content-section {
+            opacity: 0;
+            max-height: 0;
+            overflow: hidden;
+            transition: opacity 0.5s ease-in-out, max-height 0s 0.5s;
             padding: 0;
-            background-color: var(--body-bg);
-            color: var(--text-color);
         }
 
-        header {
-            background-color: var(--header-bg);
-            color: white;
-            padding: 20px 0;
-            text-align: center;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        /* Classe ativa: Torna visível e permite a altura total do conteúdo */
+        .content-section.active {
+            max-height: 5000px; 
+            transition: opacity 0.5s ease-in-out, max-height 0s 0s;
+            opacity: 1;
+            padding-top: 1.5rem; 
+            padding-bottom: 1.5rem;
         }
 
-        header h1 {
-            font-size: 1.8em;
-            margin: 0 0 10px 0;
-            font-weight: 700;
+        /* Adicionado para animação de novos tópicos */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .animate-fadeIn {
+            animation: fadeIn 0.5s ease-out forwards;
         }
 
-        nav a {
-            color: white;
-            margin: 0 15px;
-            text-decoration: none;
-            font-weight: 600;
-            padding: 5px 10px;
-            border-radius: 5px;
-            transition: background-color 0.2s, color 0.2s, transform 0.2s;
-            cursor: pointer;
-        }
-
-        nav a:hover {
-            background-color: var(--primary-color);
-            color: white;
-            transform: scale(1.05);
-        }
-
-        .cta-button {
-            background-color: var(--primary-color);
-            border-radius: 50px;
-            padding: 8px 15px !important;
-            border: none;
-        }
-
-        .cta-button:active {
-            background-color: var(--primary-dark) !important;
-            transform: scale(0.98);
-            box-shadow: 0 0 5px rgba(0, 0, 0, 0.2) inset;
-        }
-
-        .container {
-            max-width: 960px;
-            width: 90%;
-            margin: 30px auto;
-            background-color: var(--card-bg);
-            padding: 30px;
-            border-radius: 12px;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
-            transition: max-width 0.4s ease-in-out;
-        }
-
-        .container.narrow {
-            max-width: 500px;
-        }
-
-        h2 {
-            font-size: 1.5em;
-            font-weight: 700;
-            border-bottom: 2px solid var(--border-color);
-            padding-bottom: 15px;
-            margin-top: 0;
-            margin-bottom: 20px;
-            color: var(--text-color);
-        }
-
-        #topico-list {
-            min-height: 200px;
-        }
-
-        .topico {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 20px;
-            margin-bottom: 15px;
-            border-radius: 8px;
-            background-color: var(--card-bg);
-            border: 1px solid var(--border-color);
-            text-decoration: none;
-            color: inherit;
-            transition: box-shadow 0.3s, border-color 0.3s, transform 0.3s;
-            cursor: pointer;
-        }
-
-        .topico:hover, .topico:focus {
-            border-color: var(--primary-color);
-            box-shadow: 0 6px 16px rgba(0, 0, 0, 0.1);
-            transform: translateY(-2px);
-            outline: none;
-        }
-
-        .topico-content {
-            flex-grow: 1;
-        }
-
-        .topico h3 {
-            margin: 0 0 5px 0;
-            font-size: 1.2em;
-        }
-
-        .topico p {
-            font-size: 0.85em;
-            color: var(--secondary-text-color);
-            margin: 0;
-        }
-
-        .info-status {
-            text-align: right;
-            font-size: 0.9em;
-            color: var(--secondary-text-color);
-            min-width: 150px;
-        }
-
-        .info-status .respostas {
-            display: block;
-            font-weight: 600;
-            color: var(--primary-color);
-            margin-bottom: 3px;
-        }
-
-        #topic-detail-content {
-            padding: 20px;
-            border: 1px solid var(--border-color);
-            border-radius: 8px;
-        }
-       
-        #topic-detail-content h1 {
-            font-size: 1.8em;
-            margin-top: 0;
-            margin-bottom: 10px;
-            color: var(--primary-color);
-        }
-       
-        #topic-detail-content .topic-meta {
-            font-size: 0.9em;
-            color: var(--secondary-text-color);
-            margin-bottom: 20px;
-            padding-bottom: 10px;
-            border-bottom: 1px solid var(--border-color);
-        }
-       
-        #topic-detail-image-container {
-            margin: 20px 0;
-            text-align: center;
-        }
-       
-        #topic-detail-image {
-            max-width: 100%;
-            height: auto;
-            border-radius: 8px;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-        }
-
-        #topic-detail-content .topic-body {
-            line-height: 1.6;
-            white-space: pre-wrap;
-        }
-       
-        .back-button {
+        /* Aprimoramento visual: Categoria em formato de pílula */
+        .category-pill {
             display: inline-block;
-            margin-bottom: 20px;
-            color: var(--primary-color);
-            text-decoration: none;
-            font-weight: 600;
-            transition: opacity 0.2s;
-        }
-       
-        .back-button:hover {
-            opacity: 0.8;
-            text-decoration: underline;
-        }
-   
-
-
-        #create-topic-form,
-        #login-form,
-        #register-form,
-        #rules-content,
-        #my-account-content,
-        #topic-detail {
-            display: none;
-        }
-
-        .form-group {
-            margin-bottom: 20px;
-        }
-
-        .form-group label {
-            display: block;
-            margin-bottom: 8px;
-            font-weight: 600;
-            color: var(--text-color);
-        }
-
-        .form-group input[type="text"],
-        .form-group input[type="email"],
-        .form-group input[type="password"],
-        .form-group input[type="file"],
-        .form-group textarea {
-            width: 100%;
-            padding: 12px;
-            border: 1px solid var(--border-color);
-            border-radius: 8px;
-            box-sizing: border-box;
-            font-family: 'Inter', sans-serif;
-            font-size: 1em;
-            transition: border-color 0.2s;
-        }
-       
-        .form-group input[type="file"] {
-             padding: 8px 12px;
-        }
-
-
-        .form-group input:focus,
-        .form-group textarea:focus {
-            border-color: var(--primary-color);
-            outline: none;
-        }
-
-        .submit-button {
-            background-color: var(--primary-color);
+            padding: 0.25rem 0.75rem;
+            border-radius: 9999px;
+            font-size: 0.75rem; /* text-xs */
+            font-weight: 600; /* font-semibold */
             color: white;
-            padding: 12px 25px;
-            border: none;
-            border-radius: 50px;
-            font-weight: 700;
-            cursor: pointer;
-            transition: background-color 0.2s, transform 0.2s;
+            transition: background-color 0.2s ease-in-out;
+            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
         }
 
-        .submit-button:hover {
-            background-color: var(--primary-dark);
-            transform: translateY(-1px);
+        /* Cores mais vibrantes para as categorias */
+        .Programação-Web { background-color: #4f46e5; } /* indigo-600 */
+        .Design-UX/UI { background-color: #10b981; } /* emerald-500 */
+        .Inteligência-Artificial { background-color: #ef4444; } /* red-500 */
+        .Geral { background-color: #64748b; } /* slate-500 */
+        
+        /* Hover e foco para botões principais */
+        .primary-button {
+            transition: all 0.3s ease-in-out;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -2px rgba(0, 0, 0, 0.05);
         }
-       
-        .form-link {
-            display: block;
-            text-align: center;
-            margin-top: 15px;
-            font-size: 0.9em;
-            color: var(--secondary-text-color);
-            text-decoration: none;
-        }
-
-        .form-link:hover {
-            color: var(--primary-color);
-            text-decoration: underline;
-        }
-       
-        .logged-in-message {
-            text-align: center;
-            padding: 20px;
-            border: 2px solid var(--primary-color);
-            border-radius: 8px;
-            margin-bottom: 20px;
-        }
-       
-        .logged-in-message.error {
-            border-color: #ff6b6b;
-            color: #d63333;
+        .primary-button:hover {
+             box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
         }
 
-     
-        @media (max-width: 768px) {
-            .container.narrow {
-                max-width: 90%;
-            }
-            .topico {
-                flex-direction: column;
-                align-items: flex-start;
-            }
-            .info-status {
-                margin-top: 10px;
-                text-align: left;
-                min-width: auto;
-            }
-            .info-status .respostas {
-                display: inline;
-                margin-right: 10px;
-            }
-        }
     </style>
 </head>
-<body>
+<body class="text-slate-800 flex flex-col min-h-screen">
 
-    <header>
-        <h1>Sua casa no espaço: o criador de layout de habitat </h1>
-        <nav>
-            <a href="#/inicio" id="link-inicio">Início</a>
-            <a href="#/login" id="link-minha-conta">Entrar / Registrar</a>
-            <a href="#/regras">Regras</a>
-            <a href="#/novo-topico" id="link-novo-topico" class="cta-button">Novo Tópico 🚀</a>
-            <a href="#/logout" id="link-logout" style="display:none; color: #ff6b6b;">Sair 🚪</a>
-        </nav>
+    <header id="fixed-header" class="w-full">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex justify-between items-center">
+            <div class="text-3xl font-extrabold text-indigo-700">
+                <span class="inline-block p-2 rounded-xl bg-indigo-100 mr-2">
+                    <svg class="w-7 h-7 text-indigo-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.105A9.854 9.854 0 013 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"></path></svg>
+                </span>
+                
+           FÓRUM SPACE
+            </div>
+
+            <nav class="flex space-x-4" id="main-nav">
+                <button data-target="home-content" class="nav-link text-sm font-semibold px-4 py-2 rounded-lg transition duration-150 ease-in-out hover:bg-indigo-50 hover:text-indigo-700 text-indigo-700 font-bold active-nav">
+                    Início
+                </button>
+                <button data-target="profile-content" class="nav-link text-sm font-semibold px-4 py-2 rounded-lg transition duration-150 ease-in-out hover:bg-indigo-50 hover:text-indigo-700 text-slate-600">
+                    Perfil
+                </button>
+            </nav>
+
+            <div class="flex items-center space-x-3">
+                
+                <div id="auth-buttons" class="flex space-x-3">
+                    <button data-target="login-content" class="nav-link text-slate-600 hover:text-indigo-600 text-sm font-medium py-2 px-2 rounded-lg transition duration-150 ease-in-out">
+                        Login
+                    </button>
+                    <button data-target="register-content" class="nav-link primary-button bg-green-500 hover:bg-green-600 text-white font-semibold py-2 px-4 rounded-full shadow-lg transition duration-300 ease-in-out transform hover:scale-[1.05] active:scale-[0.98]">
+                        🚀 Cadastro
+                    </button>
+                </div>
+
+                <div id="user-info" class="flex items-center space-x-4 hidden">
+                    <button id="create-topic-button" data-target="create-topic-content" class="nav-link primary-button bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-2 px-4 rounded-full shadow-lg transition duration-300 ease-in-out transform hover:scale-[1.05] active:scale-[0.98]">
+                        ➕ Novo Tópico
+                    </button>
+                    <div class="hidden sm:flex items-center space-x-2">
+                        <span class="text-sm text-slate-600">Olá, <strong id="logged-user-name" class="text-indigo-700">Usuário!</strong></span>
+                        <img src="https://placehold.co/32x32/4f46e5/ffffff?text=U" alt="Avatar" class="w-8 h-8 rounded-full border border-indigo-300">
+                    </div>
+                    <button id="logout-button" class="bg-red-500 hover:bg-red-600 text-white font-semibold py-2 px-4 rounded-full shadow-md transition duration-300 ease-in-out text-sm">
+                        Sair
+                    </button>
+                </div>
+
+            </div>
+        </div>
     </header>
 
-    <div class="container" id="main-container">
+    <main class="flex-grow max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        
+        <div class="grid grid-cols-1 lg:grid-cols-4 gap-8">
 
-        <div id="topico-list">
-            <h2>Tópicos Recentes</h2>
+            <section class="lg:col-span-3"> 
+                
+                <section id="home-content" class="content-section active mt-6">
+                    <h2 class="text-4xl font-extrabold mb-8 text-slate-900 border-b-2 pb-3 border-indigo-100">forum space</h2>
+                    
+                    <div class="bg-indigo-50 p-6 rounded-2xl shadow-xl mb-8 border border-indigo-200 transform hover:scale-[1.01] transition duration-300">
+                        <h3 class="text-2xl font-bold text-indigo-700 mb-3"> Destaque da semana</h3>
+                        <p class="text-indigo-800 mb-4 opacity-90">Aprenda os fundamentos e as aplicações práticas das últimas tecnologias de Inteligência Artificial, de Large Language Models a Visão Computacional. Junte-se à conversa e não fique para trás!</p>
+                        <button class="bg-orange-500 hover:bg-orange-600 text-white font-bold py-2 px-6 rounded-full text-sm shadow-md primary-button">
+                            Ver Tópico Completo &rarr;
+                        </button>
+                    </div>
+                    
+                    <h3 class="text-3xl font-bold mb-6 text-slate-700">Tópicos Recentes</h3>
+                    
+                    <div id="topics-list-container" class="space-y-4">
+                        </div>
+                </section>
+
+                <section id="topic-detail-content" class="content-section">
+                    <button onclick="setActiveContent('home-content'); setNavActiveByTarget('home-content')" class="text-indigo-600 hover:text-indigo-800 font-medium mb-4 flex items-center">
+                        <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>
+                        Voltar aos Tópicos
+                    </button>
+                    
+                    <div class="max-w-4xl mx-auto">
+                        <div id="detailed-topic-post" class="bg-white p-8 rounded-2xl shadow-2xl mb-8 border border-indigo-100">
+                            <h1 id="detail-topic-title" class="text-4xl font-extrabold text-slate-900 mb-3">Título do Tópico Detalhado</h1>
+                            <div class="flex items-center space-x-3 text-sm text-slate-500 mb-6 border-b pb-4">
+                                <span id="detail-topic-author" class="font-medium text-indigo-600">Por Autor</span>
+                                <span id="detail-topic-time">às 00:00</span>
+                                <span id="detail-topic-category" class="category-pill Geral">Categoria</span>
+                            </div>
+
+                            <div id="detail-topic-image-container" class="mb-6 hidden">
+                                <img id="detail-topic-image" src="" alt="Imagem do Tópico" class="max-w-full rounded-lg shadow-lg border border-slate-200">
+                            </div>
+
+                            <p id="detail-topic-content" class="text-lg text-slate-700 leading-relaxed whitespace-pre-wrap">Conteúdo completo aqui...</p>
+                            
+                        </div>
+
+                        <h2 id="comments-count" class="text-2xl font-bold text-slate-800 mb-6">Comentários (0)</h2>
+
+                        <div id="comments-list" class="space-y-6 mb-8">
+                            </div>
+                        
+                        <div class="bg-white p-6 rounded-xl shadow-lg border border-slate-200">
+                            <h3 class="text-xl font-bold text-indigo-700 mb-4">Adicionar Comentário</h3>
+                            <form id="comment-form">
+                                <input type="hidden" id="current-topic-id" value=""> 
+
+                                <div class="mb-4">
+                                    <textarea id="comment-content" rows="4" class="w-full px-4 py-3 border border-slate-300 rounded-lg focus:ring-indigo-500 focus:border-indigo-500 shadow-sm" placeholder="Escreva seu comentário aqui..." required></textarea>
+                                </div>
+                                <button type="submit" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3 px-4 rounded-xl transition duration-300 primary-button">
+                                    Comentar
+                                </button>
+                                <p id="comment-auth-message" class="text-center mt-3 text-red-500 font-medium hidden">Você deve estar logado para comentar.</p>
+                            </form>
+                        </div>
+                    </div>
+                </section>
+
+                <section id="profile-content" class="content-section">
+                    <h2 class="text-3xl font-extrabold mb-6 text-slate-900 border-b pb-2">Meu Perfil 👤</h2>
+                    <div class="bg-white p-8 rounded-2xl shadow-xl flex flex-col md:flex-row items-center border border-indigo-100">
+                        <img src="https://placehold.co/120x120/4f46e5/ffffff?text=U" alt="Placeholder de Usuário" class="w-32 h-32 rounded-full object-cover mb-6 md:mb-0 md:mr-8 border-6 border-indigo-400 shadow-lg">
+                        <div class="text-center md:text-left">
+                            <h3 class="text-3xl font-extrabold text-slate-900 mb-1" id="profile-name">ISAC MIGUEL</h3>
+                            <p class="text-indigo-600 font-medium text-lg">✨ Membro Ativo do Fórum</p>
+                            <p class="text-slate-500 mt-3 max-w-lg italic">Bio: Este é o seu perfil. Compartilhe sua paixão por tecnologia, design e desenvolvimento aqui!</p>
+                            <div class="mt-6 flex flex-wrap justify-center md:justify-start space-x-6 text-base">
+                                <span class="font-bold text-indigo-700" id="profile-post-count">0 Posts</span>
+                                <span class="font-bold text-green-600">0 Respostas</span>
+                                <span class="font-bold text-red-500">Nível: Iniciante</span>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+                
+                <section id="create-topic-content" class="content-section">
+                    <h2 class="text-3xl font-extrabold mb-6 text-slate-900 border-b pb-2">Criar Novo Tópico ✍️</h2>
+                    <div class="bg-white p-8 rounded-2xl shadow-2xl max-w-3xl mx-auto border border-indigo-100">
+                        <h3 class="text-2xl font-bold mb-8 text-center text-indigo-700">Compartilhe seu Conhecimento ou Dúvida</h3>
+                        <form id="create-topic-form">
+                            <div class="mb-5">
+                                <label for="topic-title" class="block text-base font-semibold text-slate-700 mb-2">Título do Tópico <span class="text-red-500">*</span></label>
+                                <input type="text" id="topic-title" name="title" class="w-full px-5 py-3 border border-slate-300 rounded-xl focus:ring-indigo-500 focus:border-indigo-500 shadow-sm" placeholder="Ex: Dúvida sobre CSS Grid" required maxlength="100">
+                            </div>
+                            <div class="mb-5">
+                                <label for="topic-category" class="block text-base font-semibold text-slate-700 mb-2">Categoria <span class="text-red-500">*</span></label>
+                                <select id="topic-category" name="category" class="w-full px-5 py-3 border border-slate-300 rounded-xl focus:ring-indigo-500 focus:border-indigo-500 shadow-sm appearance-none" required>
+                                    <option value="">Selecione uma Categoria</option>
+                                    <option value="Programação Web" class="text-indigo-600">Programação Web 🌐</option>
+                                    <option value="Design UX/UI" class="text-green-600">Design UX/UI 🎨</option>
+                                    <option value="Inteligência Artificial" class="text-red-600">Inteligência Artificial 🤖</option>
+                                    <option value="Geral">Geral 💬</option>
+                                </select>
+                            </div>
+                            <div class="mb-5">
+                                <label for="topic-content" class="block text-base font-semibold text-slate-700 mb-2">Conteúdo <span class="text-red-500">*</span></label>
+                                <textarea id="topic-content" name="content" rows="8" class="w-full px-5 py-3 border border-slate-300 rounded-xl focus:ring-indigo-500 focus:border-indigo-500 shadow-sm" placeholder="Descreva sua dúvida ou assunto em detalhes..." required></textarea>
+                            </div>
+
+                            <div class="mb-8 p-4 bg-slate-50 border border-slate-200 rounded-xl">
+                                <label for="topic-image" class="block text-base font-semibold text-slate-700 mb-2">Adicionar Imagem (Opcional)</label>
+                                <input type="file" id="topic-image" name="image" accept="image/*" class="w-full text-sm text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-indigo-50 file:text-indigo-700 hover:file:bg-indigo-100 cursor-pointer"/>
+                                <div class="mt-4 hidden" id="image-preview-container">
+                                    <p class="text-sm font-medium text-slate-600 mb-2">Pré-visualização:</p>
+                                    <img id="image-preview" src="" alt="Pré-visualização do tópico" class="max-w-full max-h-48 rounded-lg shadow-md border border-slate-200 object-cover mx-auto"/>
+                                </div>
+                            </div>
+                            <button type="submit" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3 px-4 rounded-xl transition duration-300 ease-in-out transform hover:scale-[1.01] primary-button">
+                                Publicar Tópico Agora!
+                            </button>
+                        </form>
+                    </div>
+                </section>
+                
+                <section id="login-content" class="content-section">
+                    <h2 class="text-3xl font-extrabold mb-6 text-slate-900 border-b pb-2">Acesso à Sua Conta 🔑</h2>
+                    <div class="bg-white p-10 rounded-2xl shadow-2xl max-w-lg mx-auto border border-indigo-100">
+                        <h3 class="text-2xl font-bold mb-8 text-center text-indigo-700">Faça Login para Continuar</h3>
+                        <form id="login-form" action="#" method="POST">
+                            <div class="mb-5">
+                                <label for="email" class="block text-sm font-medium text-slate-700 mb-2">E-mail</label>
+                                <input type="email" id="email" name="email" class="w-full px-5 py-3 border border-slate-300 rounded-xl focus:ring-indigo-500 focus:border-indigo-500 shadow-sm" placeholder="teste@forum.com" required>
+                            </div>
+                            <div class="mb-6">
+                                <label for="password" class="block text-sm font-medium text-slate-700 mb-2">Senha</label>
+                                <input type="password" id="password" name="password" class="w-full px-5 py-3 border border-slate-300 rounded-xl focus:ring-indigo-500 focus:border-indigo-500 shadow-sm" placeholder="123456" required>
+                            </div>
+                            <button type="submit" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3 px-4 rounded-xl transition duration-300 ease-in-out transform hover:scale-[1.01] primary-button">
+                                Entrar na Conta
+                            </button>
+                        </form>
+                        <p class="mt-6 text-center text-sm text-slate-500">
+                            Ainda não tem conta? 
+                            <a href="#" data-target="register-content" class="switch-form-link text-green-600 hover:text-green-800 font-bold">Cadastre-se aqui.</a>
+                        </p>
+                    </div>
+                </section>
+                
+                <section id="register-content" class="content-section">
+                    <h2 class="text-3xl font-extrabold mb-6 text-slate-900 border-b pb-2">Crie sua Conta 📝</h2>
+                    <div class="bg-white p-10 rounded-2xl shadow-2xl max-w-lg mx-auto border border-indigo-100">
+                        <h3 class="text-2xl font-bold mb-8 text-center text-green-700">Junte-se à Comunidade</h3>
+                        <form id="register-form" action="#" method="POST">
+                            <div class="mb-4">
+                                <label for="reg-username" class="block text-sm font-medium text-slate-700 mb-2">Nome de Usuário</label>
+                                <input type="text" id="reg-username" name="username" class="w-full px-5 py-3 border border-slate-300 rounded-xl focus:ring-green-500 focus:border-green-500 shadow-sm" placeholder="Ex: isac_miguel" required>
+                            </div>
+                            <div class="mb-4">
+                                <label for="reg-email" class="block text-sm font-medium text-slate-700 mb-2">E-mail</label>
+                                <input type="email" id="reg-email" name="email" class="w-full px-5 py-3 border border-slate-300 rounded-xl focus:ring-green-500 focus:border-green-500 shadow-sm" placeholder="seu.email@exemplo.com" required>
+                            </div>
+                            <div class="mb-6">
+                                <label for="reg-password" class="block text-sm font-medium text-slate-700 mb-2">Senha</label>
+                                <input type="password" id="reg-password" name="password" class="w-full px-5 py-3 border border-slate-300 rounded-xl focus:ring-green-500 focus:border-green-500 shadow-sm" placeholder="Mínimo 6 caracteres" minlength="6" required>
+                            </div>
+                            <button type="submit" class="w-full bg-green-600 hover:bg-green-700 text-white font-bold py-3 px-4 rounded-xl transition duration-300 ease-in-out transform hover:scale-[1.01] primary-button">
+                                Registrar na Comunidade
+                            </button>
+                        </form>
+                        <p class="mt-6 text-center text-sm text-slate-500">
+                            Já tem uma conta? 
+                            <a href="#" data-target="login-content" class="switch-form-link text-indigo-600 hover:text-indigo-800 font-bold">Faça login.</a>
+                        </p>
+                    </div>
+                </section>
+
+            </section>
+
+            <aside id="main-sidebar" class="lg:col-span-1 bg-white p-6 rounded-xl shadow-xl hidden lg:block h-fit sticky top-[7rem]"> 
+                <h3 class="text-2xl font-bold text-gray-800 mb-4 border-b pb-2">Navegação Rápida</h3>
+                <ul class="space-y-3">
+                    <li><a data-target="home-content" class="nav-link text-gray-600 hover:text-indigo-600 transition font-medium flex items-center cursor-pointer">⭐ Tópicos Recentes</a></li>
+                    <li><a data-target="profile-content" class="nav-link text-gray-600 hover:text-indigo-600 transition font-medium flex items-center cursor-pointer">👤 Meu Perfil</a></li>
+                    <li><a data-target="create-topic-content" class="nav-link text-gray-600 hover:text-indigo-600 transition font-medium flex items-center cursor-pointer">➕ Novo Tópico</a></li>
+                    <li><a data-target="login-content" class="nav-link text-gray-600 hover:text-indigo-600 transition font-medium flex items-center cursor-pointer">🔑 Entrar/Sair</a></li>
+                </ul>
+
+                <div class="mt-8 pt-4 border-t border-slate-100">
+                    <h4 class="font-bold text-lg text-indigo-700 mb-3">Categorias Populares</h4>
+                    <ul class="text-sm space-y-2">
+                        <li><span class="category-pill Programação-Web">Programação Web</span></li>
+                        <li><span class="category-pill Design-UX/UI">Design UX/UI</span></li>
+                        <li><span class="category-pill Inteligência-Artificial">Inteligência Artificial</span></li>
+                        <li><span class="category-pill Geral">Geral</span></li>
+                    </ul>
+                </div>
+            </aside>
+            
+        </div>
+    </main>
+
+    <footer class="bg-gray-800 text-white py-8 mt-auto">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center text-sm">
+            
+            <div class="mt-2 space-x-4">
+                <a href="#" class="text-gray-400 hover:text-white">Privacidade</a>
+                <a href="#" class="text-gray-400 hover:text-white">Termos de Uso</a>
             </div>
-
-        <div id="topic-detail">
-            <a href="#/inicio" class="back-button">← Voltar para a lista de tópicos</a>
-            <div id="topic-detail-content">
-                </div>
         </div>
-       
-        <div id="create-topic-form">
-            <h2>Criar Novo Tópico para o Desafio 🛰️</h2>
-            <div id="create-topic-info"></div>
-           
-            <form id="form-novo-topico">
-                <div class="form-group">
-                    <label for="titulo-topico">Título Curto e Descritivo:</label>
-                    <input type="text" id="titulo-topico" name="titulo" required placeholder="Ex: Proposta de Sistema de Filtragem de Água">
-                </div>
-
-                <div class="form-group">
-                    <label for="imagem-topico-url">URL da Imagem (simulação de anexo):</label>
-                    <input type="text" id="imagem-topico-url" name="imagem-topico-url" placeholder="Cole aqui o link de uma imagem (Ex: https://i.imgur.com/example.jpg)">
-                    <p style="font-size: 0.8em; color: var(--secondary-text-color);">*Como não é possível fazer upload, use um link de imagem (URL) para anexar ao seu tópico.</p>
-                </div>
-
-                <div class="form-group">
-                    <label for="conteudo">Conteúdo / Detalhes da sua Ideia:</label>
-                    <textarea id="conteudo" name="conteudo" rows="10" required placeholder="Descreva sua solução, os materiais necessários e os benefícios para o habitat."></textarea>
-                </div>
-
-                <button type="submit" class="submit-button">
-                    Publicar Tópico no Fórum
-                </button>
-            </form>
-        </div>
-       
-        <div id="login-form">
-            <h2>Login</h2>
-            <form id="form-login">
-                <div class="form-group">
-                    <label for="login-email">Email ou Nome de Usuário:</label>
-                    <input type="text" id="login-input" name="login-input" required placeholder="Seu email ou apelido">
-                </div>
-
-                <div class="form-group">
-                    <label for="login-password">Senha:</label>
-                    <input type="password" id="login-password" name="login-password" required placeholder="Sua senha secreta">
-                </div>
-               
-                <button type="submit" class="submit-button">
-                    Entrar na Conta
-                </button>
-               
-                <a href="#/cadastro" class="form-link">Ainda não tem conta? **Registre-se aqui**</a>
-            </form>
-        </div>
-
-
-        <div id="register-form">
-            <h2>Crie sua Conta de Explorador 🧑‍🚀</h2>
-
-            <form id="form-registro">
-                <div class="form-group">
-                    <label for="username">Nome de Usuário:</label>
-                    <input type="text" id="username" name="username" required placeholder="Seu apelido espacial (Ex: SpaceGeek)">
-                </div>
-               
-                <div class="form-group">
-                    <label for="email">Email:</label>
-                    <input type="email" id="email" name="email" required placeholder="seu.email@exemplo.com">
-                </div>
-
-                <div class="form-group">
-                    <label for="password">Senha:</label>
-                    <input type="password" id="password" name="password" required placeholder="Mínimo de 6 caracteres">
-                </div>
-               
-                <div class="form-group">
-                    <label for="confirm-password">Confirmar Senha:</label>
-                    <input type="password" id="confirm-password" name="confirm-password" required placeholder="Repita sua senha">
-                </div>
-
-                <button type="submit" class="submit-button">
-                    Registrar Nova Conta
-                </button>
-               
-                <a href="#/login" class="form-link">Já tem conta? **Fazer Login**</a>
-            </form>
-        </div>
-       
-        <div id="rules-content">
-            <h2>Regras do Fórum de Habitat Espacial 📜</h2>
-            <p>Este fórum é dedicado à colaboração em ideias inovadoras para o desafio de habitat espacial da NASA. Por favor, mantenha o foco e o respeito:</p>
-            <ul>
-                <li>Mantenha a discussão **direcionada ao desafio** e à ciência/engenharia.</li>
-                <li>**Respeite** todos os participantes e suas ideias.</li>
-                <li>Não compartilhe informações pessoais ou confidenciais.</li>
-                <li>Qualquer forma de spam ou conteúdo ofensivo resultará em banimento imediato.</li>
-            </ul>
-        </div>
-       
-        <div id="my-account-content">
-            <h2>Bem-vindo(a), <span id="account-username">Explorador</span>! 🧑‍🚀</h2>
-            <div class="logged-in-message">
-                <p>Obrigado por contribuir para o Desafio. Você está logado e pronto para postar novos tópicos e interagir com a comunidade.</p>
-                <p>Seu Status: **Engenheiro de Voo**. Você tem **<span id="user-topic-count">0</span>** tópicos criados.</p>
-                <button onclick="navigateTo('/logout')" class="submit-button" style="background-color: #ff6b6b; margin-top: 15px;">Sair da Conta</button>
-                <button onclick="resetTopics()" class="submit-button" style="background-color: #405859; margin-top: 15px;">Resetar Tópicos</button>
-            </div>
-        </div>
-
-    </div>
-
+    </footer>
+    
     <script>
-     
-        const DEFAULT_TOPICS = [
-            { id: 1, title: "Desafio: Projeto de Estufa para Marte", content: "Esta é a minha proposta detalhada para um sistema de estufa hidropônica que utiliza 95% de água reciclada e luz LED especializada para imitar o espectro solar na superfície de Marte. A estrutura é inflável.", author: "Astronauta Júnior", last_response: "2h atrás", replies: 12, views: 450, image_url: "https://via.placeholder.com/600x300?text=Projeto+Estufa+Marte" },
-            { id: 2, title: "Melhores Materiais para Escudos de Radiação Lunar", content: "Sugiro o uso de rególito lunar compactado misturado com polietileno de alta densidade. Este composto oferece um equilíbrio ideal entre proteção contra raios cósmicos e facilidade de construção robótica in-situ. Qual a opinião de vocês?", author: "Engenheira Espacial", last_response: "Ontem", replies: 3, views: 98, image_url: "https://via.placeholder.com/600x400?text=Material+Escudo+Radiação" }
-        ];
-
-        function getTopics() {
-            let topics = JSON.parse(localStorage.getItem('forumTopics'));
-            if (!topics || topics.length === 0) {
-               
-                localStorage.setItem('forumTopics', JSON.stringify(DEFAULT_TOPICS));
-                return DEFAULT_TOPICS;
-            }
-            return topics;
-        }
-
-        function saveTopics(topics) {
-            localStorage.setItem('forumTopics', JSON.stringify(topics));
-        }
-       
-        function getUsers() {
-            return JSON.parse(localStorage.getItem('forumUsers')) || [];
-        }
-
-        function saveUsers(users) {
-            localStorage.setItem('forumUsers', JSON.stringify(users));
-        }
-
-        function getLoggedInUser() {
-           
-            return JSON.parse(sessionStorage.getItem('loggedInUser'));
-        }
-       
-        function setLoggedInUser(user) {
-            sessionStorage.setItem('loggedInUser', JSON.stringify(user));
-        }
-       
-        function clearLoggedInUser() {
-            sessionStorage.removeItem('loggedInUser');
-        }
-
-       
-
-        const mainContainer = document.getElementById('main-container');
-        const topicListDiv = document.getElementById('topico-list');
-        const createFormDiv = document.getElementById('create-topic-form');
-        const loginFormDiv = document.getElementById('login-form');
-        const registerFormDiv = document.getElementById('register-form');
-        const rulesContentDiv = document.getElementById('rules-content');
-        const myAccountDiv = document.getElementById('my-account-content');
-        const topicDetailDiv = document.getElementById('topic-detail');
-       
-        const formNovoTopico = document.getElementById('form-novo-topico');
-        const formRegistro = document.getElementById('form-registro');
-        const formLogin = document.getElementById('form-login');
-        const linkMinhaConta = document.getElementById('link-minha-conta');
-        const linkLogout = document.getElementById('link-logout');
-        const linkNovoTopico = document.getElementById('link-novo-topico');
-
-     
-        function hideAllSections(isNarrow = false) {
-            topicListDiv.style.display = 'none';
-            createFormDiv.style.display = 'none';
-            loginFormDiv.style.display = 'none';
-            registerFormDiv.style.display = 'none';
-            rulesContentDiv.style.display = 'none';
-            myAccountDiv.style.display = 'none';
-            topicDetailDiv.style.display = 'none';
-
-            if (isNarrow) {
-                mainContainer.classList.add('narrow');
-            } else {
-                mainContainer.classList.remove('narrow');
-            }
-        }
-
-        function updateNav() {
-            const user = getLoggedInUser();
-            const isLoggedIn = !!user;
-
-            linkLogout.style.display = isLoggedIn ? 'inline' : 'none';
-           
-            linkMinhaConta.style.display = 'inline';
-            linkMinhaConta.textContent = isLoggedIn ? 'Minha Conta 👤' : 'Entrar / Registrar';
-            linkMinhaConta.setAttribute('href', isLoggedIn ? '#/minha-conta' : '#/login');
-           
-         
-            linkNovoTopico.style.pointerEvents = isLoggedIn ? 'auto' : 'none';
-            linkNovoTopico.style.opacity = isLoggedIn ? '1' : '0.5';
-            linkNovoTopico.title = isLoggedIn ? '' : 'Faça login para criar um novo tópico.';
-           
-           
-            const createTopicInfo = document.getElementById('create-topic-info');
-            createTopicInfo.innerHTML = '';
-            if (!isLoggedIn) {
-                createTopicInfo.innerHTML = '<p class="logged-in-message error">Você precisa estar **logado** para postar. <a href="#/login">Clique aqui para entrar.</a></p>';
-                formNovoTopico.style.display = 'none';
-            } else {
-                formNovoTopico.style.display = 'block';
-            }
-        }
-
-       
-        function showTopicList() {
-            hideAllSections(false);
-            topicListDiv.style.display = 'block';
-            renderTopics();
-        }
-
-        function showCreateForm() {
-            hideAllSections(false);
-            if (!getLoggedInUser()) {
-                 
-                 navigateTo('/login');
-                 return;
-            }
-            createFormDiv.style.display = 'block';
-           
-            formNovoTopico.reset();
-        }
-       
-        function showRulesContent() {
-            hideAllSections(false);
-            rulesContentDiv.style.display = 'block';
-        }
-
-        function showLoginForm() {
-            hideAllSections(true);
-           
-            if (getLoggedInUser()) {
-                navigateTo('/minha-conta');
-                return;
-            }
-            loginFormDiv.style.display = 'block';
-            formLogin.reset();
-        }
-
-        function showRegisterForm() {
-            hideAllSections(true);
-           
-            if (getLoggedInUser()) {
-                navigateTo('/minha-conta');
-                return;
-            }
-            registerFormDiv.style.display = 'block';
-            formRegistro.reset();
-        }
-       
-        function showMyAccount() {
-            const user = getLoggedInUser();
-            if (!user) {
-                navigateTo('/login');
-                return;
-            }
-           
-            hideAllSections(true);
-            myAccountDiv.style.display = 'block';
-            document.getElementById('account-username').textContent = user.username;
-           
-            const userTopics = getTopics().filter(t => t.author === user.username);
-            document.getElementById('user-topic-count').textContent = userTopics.length;
-        }
-       
-     
-        function showTopicDetail(topicId) {
-            hideAllSections(false);
-            const topics = getTopics();
-            const topic = topics.find(t => t.id === parseInt(topicId));
-           
-            if (!topic) {
-                alert('Tópico não encontrado.');
-                navigateTo('/inicio');
-                return;
-            }
-           
-            topicDetailDiv.style.display = 'block';
-            const detailContent = document.getElementById('topic-detail-content');
-           
-         
-            const topicIndex = topics.findIndex(t => t.id === parseInt(topicId));
-            if (topicIndex !== -1) {
-             
-                if (typeof topics[topicIndex].views === 'undefined') {
-                    topics[topicIndex].views = (DEFAULT_TOPICS.find(t => t.id === topic.id)?.views || 0) + 1;
-                } else {
-                    topics[topicIndex].views += 1;
-                }
-                saveTopics(topics);
-            }
-           
-            const updatedTopic = topics[topicIndex] || topic;
-
-            let imageHtml = '';
-            if (updatedTopic.image_url) {
-                imageHtml = `
-                    <div id="topic-detail-image-container">
-                        <img id="topic-detail-image" src="${updatedTopic.image_url}" alt="Imagem do Tópico: ${updatedTopic.title}" onerror="this.onerror=null; this.src='https://via.placeholder.com/600x400?text=Imagem+Nao+Encontrada';">
-                    </div>
-                `;
-            }
-           
-            detailContent.innerHTML = `
-                <h1>${updatedTopic.title}</h1>
-                <p class="topic-meta">
-                    Criado por: <strong>${updatedTopic.author}</strong> | Publicado em: ${new Date(updatedTopic.created_at || '2024-01-01').toLocaleDateString('pt-BR')}
-                    <br>
-                    Respostas: ${updatedTopic.replies} | Visualizações: ${updatedTopic.views}
-                </p>
-                ${imageHtml}
-                <div class="topic-body">
-                    ${updatedTopic.content}
-                </div>
-            `;
-        }
-
-
-        function renderTopics() {
-            const topics = getTopics();
-            topicListDiv.innerHTML = '<h2>Tópicos Recentes</h2>';
-           
-            if (topics.length === 0) {
-                 topicListDiv.innerHTML += '<p>Nenhum tópico encontrado. Que tal criar o primeiro?</p>';
-                 return;
-            }
-           
-           
-            [...topics].reverse().forEach(topic => {
-                const topicElement = document.createElement('a');
-               
-                topicElement.href = `#/topico/${topic.id}`;
-                topicElement.classList.add('topico');
-                topicElement.innerHTML = `
-                    <div class="topico-content">
-                        <h3>${topic.title}</h3>
-                        <p>Criado por: ${topic.author} | Última resposta: ${topic.last_response}</p>
-                    </div>
-                    <div class="info-status">
-                        <span class="respostas">${topic.replies} Respostas</span>
-                        <span>Visualizações: ${topic.views || 0}</span>
-                    </div>
-                `;
-                topicListDiv.appendChild(topicElement);
-            });
-        }
-       
-   
-        function navigateTo(path) {
-            const newPath = path.startsWith('/') ? path.substring(1) : path;
-            history.pushState(null, '', `#/${newPath}`);
-            handleRoute();
-        }
-
-     
-        function handleRoute() {
-            const hash = window.location.hash.slice(1);
-            const parts = hash.split('/').filter(p => p);
-            const route = parts[0] || 'inicio';
-
-            updateNav();
-
-            switch (route) {
-                case 'inicio':
-                case '':
-                    showTopicList();
-                    break;
-                case 'novo-topico':
-                    showCreateForm();
-                    break;
-                case 'login':
-                    showLoginForm();
-                    break;
-                case 'cadastro':
-                    showRegisterForm();
-                    break;
-                case 'minha-conta':
-                    showMyAccount();
-                    break;
-                case 'regras':
-                    showRulesContent();
-                    break;
-                case 'logout':
-                    logoutUser();
-                    break;
-                case 'topico':
-                 
-                    const topicId = parts[1];
-                    if (topicId) {
-                        showTopicDetail(topicId);
-                    } else {
-                        navigateTo('/inicio');
+        document.addEventListener('DOMContentLoaded', () => {
+            const navLinks = document.querySelectorAll('.nav-link');
+            const switchFormLinks = document.querySelectorAll('.switch-form-link');
+            const contentSections = document.querySelectorAll('.content-section');
+            const loginForm = document.getElementById('login-form');
+            const registerForm = document.getElementById('register-form'); 
+            const createTopicForm = document.getElementById('create-topic-form'); 
+            const commentForm = document.getElementById('comment-form');
+            const authButtons = document.getElementById('auth-buttons');
+            const userInfo = document.getElementById('user-info');
+            const logoutButton = document.getElementById('logout-button');
+            const loggedUserName = document.getElementById('logged-user-name');
+            const profileName = document.getElementById('profile-name');
+            const profilePostCount = document.getElementById('profile-post-count'); 
+            const topicsListContainer = document.getElementById('topics-list-container'); 
+            
+            // Variáveis de Imagem
+            const topicImageInput = document.getElementById('topic-image');
+            const imagePreview = document.getElementById('image-preview');
+            const imagePreviewContainer = document.getElementById('image-preview-container');
+    
+            // Elementos da Detalhes do Tópico
+            const detailTopicTitle = document.getElementById('detail-topic-title');
+            const detailTopicAuthor = document.getElementById('detail-topic-author');
+            const detailTopicTime = document.getElementById('detail-topic-time');
+            const detailTopicCategory = document.getElementById('detail-topic-category');
+            const detailTopicContent = document.getElementById('detail-topic-content');
+            const detailTopicImage = document.getElementById('detail-topic-image');
+            const detailTopicImageContainer = document.getElementById('detail-topic-image-container');
+            const currentTopicIdInput = document.getElementById('current-topic-id');
+            const commentsList = document.getElementById('comments-list');
+            const commentsCountElement = document.getElementById('comments-count');
+    
+    
+            // Variável de estado global
+            let isUserLoggedIn = false;
+            let currentUserName = 'Visitante';
+            let userPostCount = 0; 
+            let currentImageBase64 = null;
+    
+            // ==========================================================
+            //  INÍCIO DA IMPLEMENTAÇÃO DE RESTRIÇÕES DE COMENTÁRIOS (IA de Filtro)
+            // ==========================================================
+    
+            // ** 1. Lista de palavras e frases proibidas (Filtro de Segurança) **
+            // Expandido para incluir xenofobia, xingamentos de baixo calão e termos de ódio.
+            const BANNED_WORDS = [
+                // Termos de ódio e preconceito (xenofobia, racismo, homofobia, etc.)
+                'racista', 'homofobico', 'xenofobia', 'preconceito', 'discriminacao', 'nazista', 'odeio', 'odio',
+                'macaco', 'negroide', 'macaqueando', // Racismo
+                'viado', 'bicha', 'sapatão', 'traveco', 'homossexual', // Homofobia/Transfobia (termos pejorativos)
+                // Xenofobia/Regionalismo (quando usado de forma ofensiva)
+                'gringo', 'estrangeiro', 'nordestino', 'sulista', 'nortista', 
+                'retardado', 'mongol', 'aleijado', 'autista', // Capacitismo/Termos pejorativos de doença
+                
+                // Xingamentos de baixo calão
+                'puta', 'vagabundo', 'merda', 'cuzão', 'caralho', 'porra', 'fdp', 'foda-se', 'idiota',
+                'imbecil', 'burro', 'otario', 'escroto', 'desgraça', 'inferno', 'peste', 'bocó', 'babaca',
+                'cabrao', 'filhodaputa', 'chupa', 'piranha', 'vaca', 'putaria', 'vergonha', 'trouxa',
+                'cu', 'pau', 'rola', 'buceta', 'pinto', 'xoxota', 'punheta', // Sexualmente explícito ou baixo calão
+    
+                // Ameaças e incitação à violência
+                'ameaça', 'matar', 'suicidio', 'bomba', 'ataque', 'violencia', 'fogo', 'explodir', 'morte' 
+            ];
+            
+            // ** 2. Função de Verificação de Segurança do Comentário **
+            function isCommentSafe(comment) {
+                // Normaliza o comentário (minúsculas, remove acentos e caracteres especiais para evitar truques)
+                const normalizedComment = comment.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/[^a-z0-9\s]/g, '');
+    
+                for (const word of BANNED_WORDS) {
+                    // Verifica se a palavra proibida está contida no comentário
+                    if (normalizedComment.includes(word)) {
+                        return false; // Conteúdo inseguro encontrado
                     }
-                    break;
-                default:
-             
-                    alert('Página não encontrada! Redirecionando para o Início.');
-                    navigateTo('/inicio');
-                    break;
+                }
+                return true; // Conteúdo seguro
             }
-        }
-       
-       
-        document.addEventListener('click', function(e) {
-            const target = e.target.closest('a[href^="#/"]');
-            if (target) {
-               
-                e.preventDefault();
-           
-                navigateTo(target.getAttribute('href').slice(1));
-            }
-        });
-       
-     
-        window.addEventListener('popstate', handleRoute);
-
-
-       
-
-     
-        formRegistro.addEventListener('submit', function(e) {
-            e.preventDefault();
-            const username = document.getElementById('username').value.trim();
-            const email = document.getElementById('email').value.trim();
-            const password = document.getElementById('password').value;
-            const confirmPassword = document.getElementById('confirm-password').value;
-           
-            if (password !== confirmPassword) {
-                alert('As senhas não coincidem!');
-                return;
-            }
-           
-            const users = getUsers();
-            if (users.find(u => u.username.toLowerCase() === username.toLowerCase() || u.email.toLowerCase() === email.toLowerCase())) {
-                alert('Nome de usuário ou email já cadastrado!');
-                return;
-            }
-           
-            users.push({ username, email, password, createdAt: new Date().toISOString() });
-            saveUsers(users);
-           
-            alert('Conta criada com sucesso! Faça login para continuar.');
-            navigateTo('/login');
-        });
-       
-       
-        formLogin.addEventListener('submit', function(e) {
-            e.preventDefault();
-            const input = document.getElementById('login-input').value.trim();
-            const password = document.getElementById('login-password').value;
-           
-            const user = getUsers().find(u =>
-                (u.username.toLowerCase() === input.toLowerCase() || u.email.toLowerCase() === input.toLowerCase()) && u.password === password
-            );
-
-            if (user) {
-               
-                const userSession = { username: user.username, email: user.email, createdAt: user.createdAt };
-                setLoggedInUser(userSession);
-                alert(`Bem-vindo de volta, ${user.username}!`);
-                formLogin.reset();
-                navigateTo('/minha-conta');
-            } else {
-                alert('Usuário ou senha inválidos.');
-            }
-        });
-       
-   
-        function resetTopics() {
-            if (confirm('Tem certeza que deseja apagar TODOS os tópicos e restaurar os tópicos padrão? Esta ação é irreversível!')) {
-                localStorage.removeItem('forumTopics');
-                alert('Tópicos resetados com sucesso! Recarregando a lista...');
-                navigateTo('/inicio');
-            }
-        }
-
-        function logoutUser() {
-            clearLoggedInUser();
-            alert('Você foi desconectado(a).');
-            navigateTo('/inicio');
-        }
-       
-       
-        formNovoTopico.addEventListener('submit', function(e) {
-            e.preventDefault();
-            const user = getLoggedInUser();
-            if (!user) return;
-            const title = document.getElementById('titulo-topico').value.trim();
-            const imageUrl = document.getElementById('imagem-topico-url').value.trim();
-            const content = document.getElementById('conteudo').value.trim();
-           
-            if (!title || !content) {
-                alert("Por favor, preencha o Título e o Conteúdo do tópico.");
-                return;
-            }
-
-            const topics = getTopics();
-           
-            const newId = topics.length > 0 ? Math.max(...topics.map(t => t.id)) + 1 : 1;
-
-            const newTopic = {
-                id: newId,
-                title: title,
-                content: content,
-                author: user.username,
-                last_response: "Agora",
-                replies: 0,
-                views: 1,
-                image_url: imageUrl,
-                created_at: new Date().toISOString()
+    
+            // ==========================================================
+            //  FIM DA IMPLEMENTAÇÃO DE RESTRIÇÕES DE COMENTÁRIOS (IA de Filtro)
+            // ==========================================================
+    
+            // Armazenamento simulado (Para o registro)
+            const registeredUser = {
+                username: 'USUARIO_TESTE',
+                email: 'usuario@teste.com',
+                password: 'password123'
             };
-           
-            topics.push(newTopic);
-            saveTopics(topics);
+            
+            // Simulação de tópicos existentes
+            const initialTopics = [
+                { id: 1, title: "Qual a melhor IA para geração de código?", author: "GPT Fã", category: "Inteligência Artificial", content: "Estou começando e gostaria de saber se Copilot, Gemini ou CodeWhisperer tem a melhor curva de aprendizado. Para o meu projeto, preciso de algo que seja bom com JavaScript e Python.", image: '', 
+                    comments: [{ author: "Dev Sênior", content: "Eu recomendo o Copilot para JS/Python. Ele é mais robusto na contextualização de grandes bases de código, mas o Gemini é ótimo para sugestões em tempo real.", time: "10:30" }] 
+                },
+                { id: 2, title: "Dicas para mobile-first Design", author: "UX Master", category: "Design UX/UI", content: "Quais são as melhores práticas para garantir que um layout complexo funcione perfeitamente em telas pequenas? Estou tendo problemas com grids complexos no Breakpoint de 375px.", image: '', 
+                    comments: [] 
+                },
+                { id: 3, title: "Entendendo o V8 Engine do JavaScript", author: "Dev Júnior", category: "Programação Web", content: "Alguém pode explicar de forma simples como o V8 otimiza o código JavaScript para rodar mais rápido no Chrome? O que são 'Hidden Classes'?", image: '', 
+                    comments: [{ author: "Professor Web", content: "Em resumo, o V8 compila JS para código de máquina em vez de interpretá-lo. 'Hidden Classes' são otimizações internas para acelerar a busca de propriedades em objetos JS, tornando-o mais próximo do desempenho de linguagens tipadas.", time: "14:50" }] 
+                }
+            ];
+            let nextTopicId = initialTopics.length + 1; // Contador para novos tópicos
+    
+    
+            // Função para carregar os tópicos iniciais
+            function loadInitialTopics() {
+                topicsListContainer.innerHTML = '';
+                [...initialTopics].sort((a, b) => b.id - a.id).forEach(topic => {
+                    createTopicElement(topic);
+                });
+            }
+    
+            // LÓGICA DE PRÉ-VISUALIZAÇÃO DE IMAGEM
+            if (topicImageInput) {
+                topicImageInput.addEventListener('change', function(event) {
+                    const file = event.target.files[0];
+                    if (file) {
+                        const reader = new FileReader();
+                        reader.onload = function(e) {
+                            currentImageBase64 = e.target.result; 
+                            imagePreview.src = currentImageBase64;
+                            imagePreviewContainer.classList.remove('hidden');
+                        };
+                        reader.readAsDataURL(file);
+                    } else {
+                        currentImageBase64 = null;
+                        imagePreview.src = '';
+                        imagePreviewContainer.classList.add('hidden');
+                    }
+                });
+            }
+    
+            // Funções auxiliares (feedback, navegação, updateHeaderState, etc.)
+            function getFeedbackElement(form) {
+                let feedback = form.parentNode.querySelector('.feedback-message');
+                if (!feedback) {
+                    feedback = document.createElement('p');
+                    feedback.className = 'text-center mt-4 font-medium text-sm feedback-message';
+                    form.parentNode.appendChild(feedback);
+                }
+                return feedback;
+            }
+    
+            function showMessage(element, text, isError = false) {
+                element.textContent = text;
+                element.classList.remove('text-green-600', 'text-red-600');
+                element.classList.add(isError ? 'text-red-600' : 'text-green-600');
+            }
+    
+            window.setActiveContent = function(targetId) { // Globalized for onclick in HTML
+                contentSections.forEach(section => {
+                    section.classList.remove('active');
+                });
+                // When we move sections into a single wrapper, we must ensure they are unhidden individually.
+                // We must also hide all other sections that are not the target ID.
+                contentSections.forEach(section => {
+                    if (section.id === targetId) {
+                        section.classList.add('active');
+                        section.scrollIntoView({ behavior: 'smooth', block: 'start' }); 
+                    } else {
+                        section.classList.remove('active');
+                    }
+                });
+            }
 
-            alert('🚀 Tópico publicado com sucesso! Ele já aparece na lista.');
-            formNovoTopico.reset();
-            navigateTo(`/topico/${newId}`);
+            window.setNavActiveByTarget = function(targetId) { // Globalized for onclick in HTML
+                const targetLink = document.querySelector(`.nav-link[data-target="${targetId}"]`);
+                const homeLink = document.querySelector('.nav-link[data-target="home-content"]');
+
+                navLinks.forEach(link => {
+                    link.classList.remove('text-indigo-700', 'font-bold', 'active-nav');
+                    if (link.closest('#main-nav')) {
+                        link.classList.add('text-slate-600');
+                    }
+                    if (link.closest('#main-sidebar ul')) {
+                        link.classList.add('text-gray-600', 'hover:text-indigo-600');
+                    }
+                });
+
+                if (targetLink) {
+                    if (targetLink.closest('#main-nav')) {
+                        targetLink.classList.remove('text-slate-600');
+                        targetLink.classList.add('text-indigo-700', 'font-bold', 'active-nav');
+                    }
+                    if (targetLink.closest('#main-sidebar ul')) {
+                        targetLink.classList.remove('text-gray-600');
+                        targetLink.classList.add('text-indigo-600', 'font-bold');
+                    }
+                } else if (targetId === 'create-topic-content' || targetId === 'login-content' || targetId === 'register-content' || targetId === 'topic-detail-content') {
+                    if (homeLink) {
+                        homeLink.classList.remove('text-slate-600');
+                        homeLink.classList.add('text-indigo-700', 'font-bold', 'active-nav');
+                    }
+                }
+            }
+    
+            function updateHeaderState(loggedIn) {
+                if (loggedIn) {
+                    authButtons.classList.add('hidden');
+                    userInfo.classList.remove('hidden');
+                    loggedUserName.textContent = currentUserName.split(' ')[0];
+                    profileName.textContent = currentUserName;
+                    profilePostCount.textContent = `${userPostCount} Posts`;
+                    document.getElementById('create-topic-button').classList.remove('hidden');
+                    
+                    // Exibe o formulário de comentário para usuários logados
+                    const commentButton = document.querySelector('#comment-form button[type="submit"]');
+                    const authMsg = document.getElementById('comment-auth-message');
+                    if (commentButton && authMsg) {
+                        commentButton.classList.remove('hidden');
+                        authMsg.classList.add('hidden');
+                    }
+                } else {
+                    authButtons.classList.remove('hidden');
+                    userInfo.classList.add('hidden');
+                    currentUserName = 'Visitante';
+                    userPostCount = 0;
+                    profileName.textContent = 'ISAC MIGUEL'; 
+                    profilePostCount.textContent = '0 Posts';
+                    document.getElementById('create-topic-button').classList.add('hidden');
+                    
+                    // Esconde o formulário de comentário e mostra a mensagem de login
+                    const commentButton = document.querySelector('#comment-form button[type="submit"]');
+                    const authMsg = document.getElementById('comment-auth-message');
+                    if (commentButton && authMsg) {
+                        commentButton.classList.add('hidden');
+                        authMsg.classList.remove('hidden');
+                    }
+                }
+            }
+    
+            function createCommentElement(comment) {
+                const commentDate = new Date();
+                const commentTime = commentDate.getHours().toString().padStart(2, '0') + ':' + commentDate.getMinutes().toString().padStart(2, '0');
+                
+                return `
+                    <div class="p-4 bg-slate-50 rounded-lg border border-slate-200">
+                        <div class="flex items-center mb-2">
+                            <img src="https://placehold.co/32x32/334155/ffffff?text=${comment.author.substring(0, 1)}" alt="Avatar" class="w-8 h-8 rounded-full mr-3 border border-slate-300">
+                            <div>
+                                <p class="font-bold text-slate-800">${comment.author}</p>
+                                <p class="text-xs text-slate-500">${commentTime}</p>
+                            </div>
+                        </div>
+                        <p class="text-sm text-slate-700 ml-11">${comment.content}</p>
+                    </div>
+                `;
+            }
+    
+            function renderComments(topic) {
+                commentsList.innerHTML = '';
+                if (topic.comments.length === 0) {
+                    commentsList.innerHTML = '<p class="text-center text-slate-500 italic">Seja o primeiro a comentar neste tópico!</p>';
+                } else {
+                    topic.comments.forEach(comment => {
+                        commentsList.insertAdjacentHTML('beforeend', createCommentElement(comment));
+                    });
+                }
+                commentsCountElement.textContent = `Comentários (${topic.comments.length})`;
+            }
+    
+            window.showTopicDetail = function(topicId) {
+                const topic = initialTopics.find(t => t.id === topicId);
+                
+                if (!topic) {
+                    alert('Tópico não encontrado!');
+                    return;
+                }
+    
+                // Preenche os dados do tópico
+                detailTopicTitle.textContent = topic.title;
+                detailTopicAuthor.textContent = `Por ${topic.author}`;
+                detailTopicContent.textContent = topic.content;
+                currentTopicIdInput.value = topic.id;
+                
+                // Categoria e Cor
+                detailTopicCategory.textContent = topic.category;
+                detailTopicCategory.className = `category-pill ${topic.category.replace(/ /g, '-').replace(/\//g, '')}`;
+    
+                // Imagem
+                if (topic.image) {
+                    detailTopicImage.src = topic.image;
+                    detailTopicImageContainer.classList.remove('hidden');
+                } else {
+                    detailTopicImage.src = '';
+                    detailTopicImageContainer.classList.add('hidden');
+                }
+                
+                // Comentários
+                renderComments(topic);
+                
+                // Navega para a seção
+                setActiveContent('topic-detail-content');
+                setNavActiveByTarget('topic-detail-content');
+                
+                // Atualiza estado de login para o formulário de comentário
+                updateHeaderState(isUserLoggedIn);
+            }
+    
+            function createTopicElement(topic) {
+                const categoryClass = topic.category.replace(/ /g, '-').replace(/\//g, '');
+                let borderColor = '';
+    
+                switch (topic.category) {
+                    case 'Programação Web':
+                        borderColor = 'border-indigo-500';
+                        break;
+                    case 'Design UX/UI':
+                        borderColor = 'border-emerald-500';
+                        break;
+                    case 'Inteligência Artificial':
+                        borderColor = 'border-red-500';
+                        break;
+                    default:
+                        borderColor = 'border-gray-500';
+                        break;
+                }
+    
+                const now = new Date();
+                const hours = now.getHours().toString().padStart(2, '0');
+                const minutes = now.getMinutes().toString().padStart(2, '0');
+                const timeStr = `${hours}:${minutes}`;
+                
+                const imageBlock = topic.image ? 
+                    `<div class="mt-4 mb-3 border-t pt-3 border-slate-100">
+                        <img src="${topic.image}" alt="Imagem do tópico" class="max-w-full max-h-40 rounded-lg shadow-sm object-cover" />
+                    </div>` : '';
+    
+                const newTopicHtml = `
+                    <div onclick="showTopicDetail(${topic.id})" class="cursor-pointer bg-white p-5 rounded-xl shadow-lg border-l-4 ${borderColor} flex justify-between items-start hover:shadow-xl hover:translate-y-[-2px] transition duration-200 ease-in-out animate-fadeIn" style="animation-delay: 0.1s;">
+                        <div>
+                            <a href="#" class="text-lg font-bold text-slate-900 hover:text-indigo-600 transition">${topic.title}</a>
+                            <p class="text-sm text-slate-500 mt-1">por <span class="font-medium text-indigo-600">${topic.author}</span> às ${timeStr}</p>
+                            ${imageBlock} 
+                            <p class="text-sm text-slate-700 mt-2 line-clamp-2">${topic.content.substring(0, 100)}...</p>
+                            <div class="mt-3 text-xs flex space-x-3 text-slate-500">
+                                <span class="font-medium">${topic.comments.length} Respostas</span>
+                                <span class="font-medium">1 Visualização</span>
+                            </div>
+                            <span class="category-pill ${categoryClass} mt-3">${topic.category}</span>
+                        </div>
+                    </div>
+                `;
+                
+                topicsListContainer.insertAdjacentHTML('afterbegin', newTopicHtml);
+            }
+    
+    
+            // Lógica de Submissão de CRIAÇÃO DE TÓPICO
+            if (createTopicForm) {
+                createTopicForm.addEventListener('submit', (event) => {
+                    event.preventDefault();
+                    
+                    if (!isUserLoggedIn) {
+                        alert("Você deve estar logado para criar um tópico!");
+                        return;
+                    }
+    
+                    const title = document.getElementById('topic-title').value.trim();
+                    const category = document.getElementById('topic-category').value;
+                    const content = document.getElementById('topic-content').value.trim();
+                    
+                    if (!title || !category || !content) {
+                        alert("Preencha todos os campos obrigatórios do tópico.");
+                        return;
+                    }
+    
+                    const newTopic = {
+                        id: nextTopicId++,
+                        title: title,
+                        author: currentUserName,
+                        category: category,
+                        content: content,
+                        image: currentImageBase64,
+                        comments: []
+                    };
+                    initialTopics.push(newTopic);
+                    
+                    createTopicElement(newTopic);
+    
+                    userPostCount++;
+                    profilePostCount.textContent = `${userPostCount} Posts`;
+    
+                    createTopicForm.reset();
+                    currentImageBase64 = null;
+                    imagePreview.src = '';
+                    imagePreviewContainer.classList.add('hidden');
+                    
+                    alert(`Tópico "${title}" publicado com sucesso!`);
+                    
+                    setActiveContent('home-content');
+                    setNavActiveByTarget('home-content');
+                });
+            }
+            
+            // Lógica de Submissão de COMENTÁRIO (Com a Restrição Implementada)
+            if (commentForm) {
+                commentForm.addEventListener('submit', (event) => {
+                    event.preventDefault();
+    
+                    if (!isUserLoggedIn) {
+                        alert("Você deve estar logado para comentar!");
+                        return;
+                    }
+                    
+                    const topicId = parseInt(currentTopicIdInput.value);
+                    const commentContent = document.getElementById('comment-content').value.trim();
+    
+                    if (!commentContent) {
+                        alert("O comentário não pode estar vazio.");
+                        return;
+                    }
+                    
+                    // ** APLICAÇÃO DA RESTRIÇÃO DE CONTEÚDO **
+                    if (!isCommentSafe(commentContent)) {
+                        alert("🚫 Conteúdo Bloqueado pelo Filtro de Segurança (IA): O seu comentário contém termos de baixo calão, ofensas, xenofobia ou incitação ao ódio. Por favor, revise e utilize uma linguagem respeitosa.");
+                        return; // IMPEDE A PUBLICAÇÃO
+                    }
+                    // ** FIM DA APLICAÇÃO DA RESTRIÇÃO **
+    
+    
+                    const topic = initialTopics.find(t => t.id === topicId);
+    
+                    if (topic) {
+                        const newComment = {
+                            author: currentUserName,
+                            content: commentContent,
+                        };
+                        
+                        topic.comments.push(newComment);
+                        
+                        renderComments(topic);
+                        
+                        document.getElementById('comment-content').value = '';
+                        alert("Comentário adicionado com sucesso!");
+                    }
+                });
+            }
+    
+    
+            // Lógica de navegação, login, cadastro e logout (mantidas do código anterior)
+            navLinks.forEach(link => {
+                link.addEventListener('click', (event) => {
+                    event.preventDefault(); 
+                    const targetId = event.currentTarget.getAttribute('data-target');
+                    if ((targetId === 'profile-content' || targetId === 'create-topic-content') && !isUserLoggedIn) {
+                        const feedbackElement = getFeedbackElement(loginForm);
+                        showMessage(feedbackElement, "Você precisa fazer login para acessar esta funcionalidade.", true);
+                        setActiveContent('login-content');
+                        setNavActiveByTarget('login-content');
+                        return; 
+                    }
+                    document.querySelectorAll('.feedback-message').forEach(el => el.textContent = '');
+                    setActiveContent(targetId);
+                    setNavActiveByTarget(targetId);
+                });
+            });
+    
+            switchFormLinks.forEach(link => {
+                link.addEventListener('click', (event) => {
+                    event.preventDefault();
+                    const targetId = event.currentTarget.getAttribute('data-target');
+                    document.querySelectorAll('.feedback-message').forEach(el => el.textContent = '');
+                    setActiveContent(targetId);
+                    setNavActiveByTarget(targetId);
+                });
+            });
+    
+            if (registerForm) {
+                registerForm.addEventListener('submit', (event) => {
+                    event.preventDefault();
+                    const feedbackElement = getFeedbackElement(registerForm);
+                    const username = document.getElementById('reg-username').value.trim();
+                    const email = document.getElementById('reg-email').value.trim();
+                    const password = document.getElementById('reg-password').value.trim();
+                    if (!username || !email || !password || password.length < 6) {
+                        showMessage(feedbackElement, "Verifique todos os campos. Senha precisa de 6+ caracteres.", true);
+                        return;
+                    }
+                    registeredUser.username = username.toUpperCase();
+                    registeredUser.email = email;
+                    registeredUser.password = password;
+                    currentUserName = username.toUpperCase();
+                    isUserLoggedIn = true;
+                    userPostCount = 0; 
+                    updateHeaderState(isUserLoggedIn);
+                    showMessage(feedbackElement, `Cadastro concluído! Redirecionando para o perfil...`, false);
+                    setTimeout(() => {
+                        setActiveContent('profile-content');
+                        setNavActiveByTarget('profile-content'); 
+                        feedbackElement.textContent = ''; 
+                    }, 1000);
+                });
+            }
+    
+            if (loginForm) {
+                loginForm.addEventListener('submit', (event) => {
+                    event.preventDefault();
+                    const feedbackElement = getFeedbackElement(loginForm);
+                    const email = document.getElementById('email').value.trim();
+                    const password = document.getElementById('password').value.trim();
+                    const isRegisteredMatch = email === registeredUser.email && password === registeredUser.password;
+                    const isDefaultMatch = email === "teste@forum.com" && password === "123456";
+                    
+                    if (isRegisteredMatch || isDefaultMatch) {
+                        currentUserName = isRegisteredMatch ? registeredUser.username : email.split('@')[0].toUpperCase();
+                        isUserLoggedIn = true;
+                        userPostCount = isDefaultMatch ? 3 : userPostCount; 
+                        updateHeaderState(isUserLoggedIn);
+                        showMessage(feedbackElement, `Login bem-sucedido! Redirecionando para o perfil...`, false);
+                        setTimeout(() => {
+                            setActiveContent('profile-content');
+                            setNavActiveByTarget('profile-content');
+                            feedbackElement.textContent = ''; 
+                        }, 1000);
+                    } else {
+                        showMessage(feedbackElement, "E-mail ou senha incorretos.", true);
+                    }
+                });
+            }
+    
+            if (logoutButton) {
+                logoutButton.addEventListener('click', () => {
+                    isUserLoggedIn = false;
+                    currentUserName = 'Visitante';
+                    userPostCount = 0;
+                    updateHeaderState(isUserLoggedIn);
+                    setActiveContent('home-content');
+                    setNavActiveByTarget('home-content');
+                });
+            }
+    
+            // Inicialização
+            updateHeaderState(isUserLoggedIn);
+            const initialLink = document.querySelector('.nav-link[data-target="home-content"]');
+            if (initialLink) {
+                setNavActiveByTarget('home-content'); // Define o estado ativo de navegação
+                setActiveContent('home-content'); // Exibe o conteúdo de início
+            }
+            loadInitialTopics();
         });
-
-
-     
-        document.addEventListener('DOMContentLoaded', handleRoute);
     </script>
 </body>
 </html>
