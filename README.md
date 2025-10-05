@@ -10,9 +10,6 @@ Welcome to the repository for The of Blacks Forum, a project developed for the N
 
 Our goal is to create a collaborative community where knowledge can be freely shared, empowering the next generation of interplanetary exploration and habitation.
 
-The website is hosted and can be accessed through the following link:
-[**Access the Forum Here\!**](https://www.google.com/search?q=YOUR_SITE_URL_HERE) *(\<-- Replace with your actual site URL when it's online)*
-
 ## ✨ Features
 
   * **Discussion Platform:** A space to create topics and debate various subjects related to homes in space.
@@ -67,9 +64,6 @@ Bem-vindo ao repositório do The of Blacks Forum, um projeto desenvolvido para o
 O **The of Blacks Forum** é uma plataforma online (fórum) com foco em discussões sobre a vida no espaço, especificamente a criação e desenvolvimento de habitações em outros planetas. O site serve como um ponto de encontro para projetistas, engenheiros, estudantes e entusiastas do espaço compartilharem ideias, projetos, dicas e soluções inovadoras para os desafios da colonização espacial.
 
 Nosso objetivo é criar uma comunidade colaborativa onde o conhecimento possa ser compartilhado livremente, impulsionando a próxima geração de exploração e habitação interplanetária.
-
-O site está hospedado e pode ser acessado através do seguinte link:
-[**Acesse o Fórum Aqui\!**](https://www.google.com/search?q=URL_DO_SEU_SITE_AQUI)  *(\<-- Substitua pela URL real do seu site quando estiver online)*
 
 ## ✨ Funcionalidades
 
